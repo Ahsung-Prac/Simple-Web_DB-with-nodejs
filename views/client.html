@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>hello world</title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <script type="text/javascript">
+        var ajax = null;
+		var tresult = null;
+
+        function doAction(){
+                var input = document.getElementById("input1");
+                var callback = function(){
+                        var target = document.getElementById("msg");
+						var result = document.getElementById("result");
+                        var res = JSON.parse(ajax.getResponse());
+                        target.textContent = "You have sent:: " + res.msg;
+						
+						if(typeof res.sql == "string"){
+								result.innerText = "InValid Sql\n ";
+						}
+						else if(JSON.stringify(res.sql) == '[]')
+								result.innerText = "Empty tuple\n";
+						else if(typeof res.sql == 'string'){
+							result.innerText = res.sql+"wersdf\n";
+						}
+						else /*if (typeof res.sql == 'object')*/{
+								var jstr = "Result:<br><br>";
+								// Distinct JSON array and JSON obj 
+								var atr;
+								var Arr;
+								if (typeof res.sql[0] == 'undefined'){
+									 Arr = new Array();
+									Arr.push(res.sql);
+								}
+								else{
+									Arr = res.sql;
+								}
+                                atr = Object.keys(Arr[0]);
+								jstr += " <table border='1'>";
+							
+								for (i in atr){
+										jstr += '<th>'+ atr[i] + '</th>';
+								}
+								
+								for(i in Arr){
+										if(i == 'meta') break;
+										jstr += '<tr>';
+										for( j in atr){
+												jstr += '<td>'+Arr[i][atr[j]]+'</td>';
+										}
+										jstr += '</tr>';
+								}
+								jstr += '</table>';
+								result.innerHTML = jstr;
+						}
+						
+                }
+                ajax = new AjaxObject('/hello?input1=' + input.value,callback);
+        }
+
+        function AjaxObject(url,callback)
+        {
+                var response = null;
+                var callback = callback;
+                ajaxStart(url);
+                this.getResponse = function()
+                {
+                        return response;
+                }
+                function ajaxStart(url){
+                        var req = createRequest();
+                        if (req == null){
+                                alert("Hello World");
+                                return;
+                        }
+                        req.open("POST",url);
+                        req.setRequestHeader ("User-Agent","XMLHttpRequest");
+                        req.onreadystatechange = function()
+                        {
+                                if (this.readyState == 4 && this.status == 200)
+                                {
+                                         precallback(this); }
+                                }
+                                req.send();
+                        }
+
+                        function createRequest(){
+                                var httplist = [
+                                        function(){
+                                                return new XMLHttpRequest(); },
+                                        function(){
+                                                return new ActiveXObjct ("Msxml2.XMLHTTP"); },
+function(){
+                                                return new ActiveXObject ("Microsoft.XMLHTTP"); } ];
+                                for(var i = 0;i < httplist.length;i++){
+                                        try {
+                                                var http = httplist[i]();
+                                                if (http != null) return http;
+                                        } catch(e){ continue; }
+                                }
+                                return null;
+                                }
+                                function precallback(request){
+                                        response = request.responseText;
+                                        callback();
+                                }
+                        }
+        </script>
+        </head>
+
+<body onload="init()">
+        <h1>Test Sql</h1>
+		<h1>B511209</h1>
+		<h2>Pitchers</h2>
+		<h5>권한 sycntest DB (select,insert,create,update,delete)</h5>
+        <p id="msg"></p>
+        <form id="form1" name="form1" method="post" action="/hello"
+                onsubmit="return false;">
+				<input type="text" id="input1" name="input1" placeholder="Enter Sql. ex)desc pitchers">
+        <input type="button" id="btn" value="click" onclick="doAction();">
+		<p id = "result"></p>
+		
+		<pre id = "re">
+		<script type="text/javascript">
+		
+		</script>
+		</pre>
+ </form>
+</body>
+</html>
