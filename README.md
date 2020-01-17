@@ -1,7 +1,5 @@
-basic mariaDB <> nodejs connect
+# connection between Nodejs and mariaDB
+------------------------------------------
+front with ajax
 
-and
-test front_end by view_html
-
-Needs npm, (express, mariaDB )
-
+simple sql query web system 
