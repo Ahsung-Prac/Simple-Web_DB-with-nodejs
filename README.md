@@ -2,5 +2,4 @@
 ------------------------------------------
 
 > - Front with ajax
-
 > - simple sql query web system 
